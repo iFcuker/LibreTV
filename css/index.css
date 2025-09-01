@@ -1,5 +1,106 @@
 /* 主页特定样式 */
 
+<!-- 3. CSS 样式（插入到页面 <style> 标签中） -->
+<style>
+.movie-filter-container {
+  margin: 15px 0;
+  text-align: right;
+}
+.filter-toggle-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #2c3e50;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+.filter-toggle-btn:hover {
+  background: #34495e;
+}
+/* 筛选面板样式 */
+.filter-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+  padding: 20px;
+  z-index: 1000;
+}
+.hidden {
+  display: none;
+}
+.filter-section {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+.filter-section h4 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: #333;
+}
+.filter-item {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+.filter-select {
+  width: 180px;
+  padding: 6px;
+  margin-left: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.filter-checkgroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+.filter-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.apply-btn {
+  background: #27ae60;
+  color: white;
+}
+.reset-btn {
+  background: #e74c3c;
+  color: white;
+}
+.save-btn {
+  background: #3498db;
+  color: white;
+}
+/* 电影列表样式（适配现有布局，可根据实际调整） */
+.movie-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+.movie-item {
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+</style>
+
 /* 历史记录和设置按钮定位样式 */
 .top-corner-button {
     position: fixed;
