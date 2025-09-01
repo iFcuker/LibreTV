@@ -791,3 +791,17 @@ function resetTagsToDefault() {
     
     showToast('已恢复默认标签', 'success');
 }
+
+// 修改筛选函数，支持动态加载的电影
+function filterMovies() {
+  // 使用更通用的选择器，确保能选中动态加载的电影
+  const allMovies = document.querySelectorAll('[data-type][data-region][data-year][data-rating]');
+  // 其余代码不变...
+}
+
+// 动态加载电影后调用筛选
+function loadMoreMovies() {
+  // 加载新电影的逻辑...
+  // 加载完成后重新筛选
+  filterMovies();
+}
