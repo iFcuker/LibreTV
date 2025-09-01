@@ -1,3 +1,308 @@
+<!-- 1. 筛选面板 HTML（插入到"豆瓣热门推荐"模块上方） -->
+<div class="movie-filter-container">
+  <button id="filterToggleBtn" class="filter-toggle-btn">
+    ⚙️ 筛选电影
+  </button>
+  <!-- 筛选弹窗面板 -->
+  <div id="filterPanel" class="filter-panel hidden">
+    <!-- 基础属性筛选 -->
+    <div class="filter-section">
+      <h4>基础筛选</h4>
+      <!-- 影片类型 -->
+      <div class="filter-item">
+        <label>影片类型：</label>
+        <select id="movieType" class="filter-select">
+          <option value="">全部类型</option>
+          <option value="动作">动作</option>
+          <option value="喜剧">喜剧</option>
+          <option value="科幻">科幻</option>
+          <option value="悬疑">悬疑</option>
+          <option value="爱情">爱情</option>
+          <option value="动画">动画</option>
+        </select>
+      </div>
+      <!-- 上映年份 -->
+      <div class="filter-item">
+        <label>上映年份：</label>
+        <select id="movieYear" class="filter-select">
+          <option value="">全部年份</option>
+          <option value="2024">2024年</option>
+          <option value="2023">2023年</option>
+          <option value="2020-2022">2020-2022年</option>
+          <option value="2010-2019">2010-2019年</option>
+          <option value="2010前">2010年前</option>
+        </select>
+      </div>
+      <!-- 评分范围 -->
+      <div class="filter-item">
+        <label>豆瓣评分：</label>
+        <select id="movieRating" class="filter-select">
+          <option value="">全部评分</option>
+          <option value="8.5">8.5分以上</option>
+          <option value="7.5">7.5-8.4分</option>
+          <option value="6.0">6.0-7.4分</option>
+          <option value="6.0以下">6.0分以下</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 资源来源筛选 -->
+    <div class="filter-section">
+      <h4>资源来源</h4>
+      <div class="filter-checkgroup">
+        <label><input type="checkbox" name="source" value="电影天堂" checked> 电影天堂</label>
+        <label><input type="checkbox" name="source" value="如意资源" checked> 如意资源</label>
+        <label><input type="checkbox" name="source" value="卧龙资源" checked> 卧龙资源</label>
+      </div>
+    </div>
+
+    <!-- 筛选操作按钮 -->
+    <div class="filter-actions">
+      <button id="applyFilterBtn" class="filter-btn apply-btn">应用筛选</button>
+      <button id="resetFilterBtn" class="filter-btn reset-btn">重置筛选</button>
+      <button id="saveFilterBtn" class="filter-btn save-btn">保存当前条件</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2. 电影列表容器（需确保现有电影列表使用此容器ID） -->
+<div id="movieList" class="movie-list">
+  <!-- 现有电影列表内容会在这里渲染，筛选后会更新 -->
+</div>
+
+<!-- 3. CSS 样式（插入到页面 <style> 标签中） -->
+<style>
+.movie-filter-container {
+  margin: 15px 0;
+  text-align: right;
+}
+.filter-toggle-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background: #2c3e50;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+.filter-toggle-btn:hover {
+  background: #34495e;
+}
+/* 筛选面板样式 */
+.filter-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+  padding: 20px;
+  z-index: 1000;
+}
+.hidden {
+  display: none;
+}
+.filter-section {
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+.filter-section h4 {
+  margin: 0 0 10px;
+  font-size: 16px;
+  color: #333;
+}
+.filter-item {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+.filter-select {
+  width: 180px;
+  padding: 6px;
+  margin-left: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.filter-checkgroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+.filter-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.apply-btn {
+  background: #27ae60;
+  color: white;
+}
+.reset-btn {
+  background: #e74c3c;
+  color: white;
+}
+.save-btn {
+  background: #3498db;
+  color: white;
+}
+/* 电影列表样式（适配现有布局，可根据实际调整） */
+.movie-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+.movie-item {
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+</style>
+
+<!-- 4. JavaScript 筛选逻辑（插入到页面 <script> 标签中） -->
+<script>
+// 假设现有电影数据（实际需替换为你的网站真实数据，如从API获取）
+let movieData = [
+  { title: "流浪地球2", type: "科幻", year: "2023", rating: "8.3", source: "电影天堂", url: "#" },
+  { title: "满江红", type: "悬疑", year: "2023", rating: "7.1", source: "如意资源", url: "#" },
+  { title: "蜘蛛侠：平行宇宙", type: "动画", year: "2023", rating: "8.7", source: "卧龙资源", url: "#" },
+  { title: "肖申克的救赎", type: "剧情", year: "1994", rating: "9.7", source: "电影天堂", url: "#" },
+  { title: "复仇者联盟4", type: "动作", year: "2019", rating: "8.5", source: "如意资源", url: "#" }
+];
+
+// DOM 元素获取
+const filterToggleBtn = document.getElementById("filterToggleBtn");
+const filterPanel = document.getElementById("filterPanel");
+const applyFilterBtn = document.getElementById("applyFilterBtn");
+const resetFilterBtn = document.getElementById("resetFilterBtn");
+const saveFilterBtn = document.getElementById("saveFilterBtn");
+const movieList = document.getElementById("movieList");
+
+// 1. 筛选面板显示/隐藏
+filterToggleBtn.addEventListener("click", () => {
+  filterPanel.classList.toggle("hidden");
+});
+
+// 2. 渲染电影列表（核心函数）
+function renderMovieList(movies) {
+  if (movies.length === 0) {
+    movieList.innerHTML = "<div class='empty-tip'>暂无符合条件的电影</div>";
+    return;
+  }
+  // 拼接电影列表HTML
+  let html = "";
+  movies.forEach(movie => {
+    html += `
+      <div class="movie-item">
+        <h5><a href="${movie.url}" target="_blank">${movie.title}</a></h5>
+        <p>类型：${movie.type} | 年份：${movie.year}</p>
+        <p>评分：<span style="color:#e74c3c">${movie.rating}</span> | 来源：${movie.source}</p>
+      </div>
+    `;
+  });
+  movieList.innerHTML = html;
+}
+
+// 3. 应用筛选（核心逻辑）
+function applyFilter() {
+  // 获取筛选条件
+  const type = document.getElementById("movieType").value;
+  const year = document.getElementById("movieYear").value;
+  const rating = document.getElementById("movieRating").value;
+  const sources = Array.from(document.querySelectorAll("input[name='source']:checked")).map(el => el.value);
+
+  // 筛选逻辑（多条件叠加）
+  const filteredMovies = movieData.filter(movie => {
+    // 类型筛选
+    if (type && movie.type !== type) return false;
+    // 年份筛选（处理区间）
+    if (year) {
+      if (year === "2020-2022" && !(movie.year >= 2020 && movie.year <= 2022)) return false;
+      if (year === "2010-2019" && !(movie.year >= 2010 && movie.year <= 2019)) return false;
+      if (year === "2010前" && movie.year >= 2010) return false;
+      if (["2024", "2023"].includes(year) && movie.year !== year) return false;
+    }
+    // 评分筛选
+    if (rating) {
+      const movieRatingNum = parseFloat(movie.rating);
+      if (rating === "8.5" && movieRatingNum < 8.5) return false;
+      if (rating === "7.5" && !(movieRatingNum >= 7.5 && movieRatingNum < 8.5)) return false;
+      if (rating === "6.0" && !(movieRatingNum >= 6.0 && movieRatingNum < 7.5)) return false;
+      if (rating === "6.0以下" && movieRatingNum >= 6.0) return false;
+    }
+    // 资源来源筛选
+    if (!sources.includes(movie.source)) return false;
+    // 全部条件满足
+    return true;
+  });
+
+  // 渲染筛选结果
+  renderMovieList(filteredMovies);
+  // 关闭筛选面板
+  filterPanel.classList.add("hidden");
+}
+
+// 4. 重置筛选
+function resetFilter() {
+  // 重置所有筛选控件
+  document.getElementById("movieType").value = "";
+  document.getElementById("movieYear").value = "";
+  document.getElementById("movieRating").value = "";
+  document.querySelectorAll("input[name='source']").forEach(el => el.checked = true);
+  // 渲染全部电影
+  renderMovieList(movieData);
+}
+
+// 5. 保存筛选条件（基于浏览器缓存）
+function saveFilter() {
+  const filterConfig = {
+    type: document.getElementById("movieType").value,
+    year: document.getElementById("movieYear").value,
+    rating: document.getElementById("movieRating").value,
+    sources: Array.from(document.querySelectorAll("input[name='source']:checked")).map(el => el.value)
+  };
+  // 存入localStorage
+  localStorage.setItem("movieFilterConfig", JSON.stringify(filterConfig));
+  alert("筛选条件已保存，下次打开自动加载！");
+}
+
+// 6. 加载保存的筛选条件（页面初始化时）
+function loadSavedFilter() {
+  const savedConfig = localStorage.getItem("movieFilterConfig");
+  if (!savedConfig) return;
+  const config = JSON.parse(savedConfig);
+  // 还原筛选控件状态
+  document.getElementById("movieType").value = config.type;
+  document.getElementById("movieYear").value = config.year;
+  document.getElementById("movieRating").value = config.rating;
+  document.querySelectorAll("input[name='source']").forEach(el => {
+    el.checked = config.sources.includes(el.value);
+  });
+}
+
+// 事件绑定
+applyFilterBtn.addEventListener("click", applyFilter);
+resetFilterBtn.addEventListener("click", resetFilter);
+saveFilterBtn.addEventListener("click", saveFilter);
+
+// 页面初始化：加载保存的条件 + 渲染全部电影
+loadSavedFilter();
+renderMovieList(movieData);
+</script>
+
+
 // 豆瓣热门电影电视剧推荐功能
 
 // 豆瓣标签列表 - 修改为默认标签
@@ -790,18 +1095,4 @@ function resetTagsToDefault() {
     renderRecommend(doubanCurrentTag, doubanPageSize, doubanPageStart);
     
     showToast('已恢复默认标签', 'success');
-}
-
-// 修改筛选函数，支持动态加载的电影
-function filterMovies() {
-  // 使用更通用的选择器，确保能选中动态加载的电影
-  const allMovies = document.querySelectorAll('[data-type][data-region][data-year][data-rating]');
-  // 其余代码不变...
-}
-
-// 动态加载电影后调用筛选
-function loadMoreMovies() {
-  // 加载新电影的逻辑...
-  // 加载完成后重新筛选
-  filterMovies();
 }
